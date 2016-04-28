@@ -6,6 +6,7 @@ use app\models\Solver;
 use Yii;
 use yii\web\Controller;
 use yii\base\InvalidParamException;
+use yii\web\Response;
 
 class SiteController extends Controller
 {
@@ -14,7 +15,7 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-    public function actionCalculator($expression)
+    public function actionCalculator($expression, $callback = '')
     {
         try {
             $result = (new Solver())->solve($expression);
@@ -22,8 +23,17 @@ class SiteController extends Controller
             $result = $e->getMessage();
         }
 
-        Yii::$app->response->format = 'json';
+        if ($callback) {
+            Yii::$app->response->format = Response::FORMAT_JSONP;
+            return [
+                'data' => [
+                    'result' => $result,
+                ],
+                'callback' => $callback,
+            ];
+        }
 
+        Yii::$app->response->format = Response::FORMAT_JSON;
         return [
             'result' => $result,
         ];
