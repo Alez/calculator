@@ -5,7 +5,6 @@ namespace app\controllers;
 use app\models\Solver;
 use Yii;
 use yii\web\Controller;
-use yii\base\InvalidParamException;
 use yii\web\Response;
 
 class SiteController extends Controller
@@ -19,7 +18,7 @@ class SiteController extends Controller
     {
         try {
             $result = (new Solver())->solve($expression);
-        } catch (InvalidParamException $e) {
+        } catch (\Exception $e) {
             $result = $e->getMessage();
         }
 
